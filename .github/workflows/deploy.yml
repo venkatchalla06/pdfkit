@@ -109,7 +109,12 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
+      - name: Skip if no server configured
+        if: ${{ secrets.DEPLOY_HOST == '' }}
+        run: echo "DEPLOY_HOST secret not set — skipping deployment."
+
       - name: Deploy via SSH
+        if: ${{ secrets.DEPLOY_HOST != '' }}
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DEPLOY_HOST }}
